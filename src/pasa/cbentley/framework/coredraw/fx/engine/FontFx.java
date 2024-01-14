@@ -58,7 +58,7 @@ public class FontFx extends FontJ2SE {
          // Doesn't seem to be any underlined font support in plain old AWT, never mind.
       }
 
-      this.font = javafx.scene.text.Font.font(fontName, fw, posture, points);
+      this.font = javafx.scene.text.Font.font(fontNameInit, fw, posture, points);
       fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
    }
 
