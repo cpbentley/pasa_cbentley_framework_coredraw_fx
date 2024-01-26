@@ -40,11 +40,11 @@ public class CoreDrawFxCtx extends CoreDrawJ2seCtx {
     * @param boc
     */
    public CoreDrawFxCtx(FxCtx fc, BOCtx boc) {
-      this(null, fc, boc);
+      this(new ConfigCoreDrawFxDef(boc.getUCtx()), fc, boc);
    }
 
    public CoreDrawFxCtx(IConfigCoreDrawFx configDraw, FxCtx fc, BOCtx boc) {
-      super((configDraw == null) ? new ConfigCoreDrawFxDef(boc.getUCtx()) : configDraw, boc);
+      super(configDraw, fc, boc);
       configDrawFx = (IConfigCoreDrawFx) getConfig();
       this.fc = fc;
       factoryFont = new FontFactoryFx(this);
