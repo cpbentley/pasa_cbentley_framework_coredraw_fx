@@ -6,18 +6,17 @@ import pasa.cbentley.byteobjects.src4.core.ByteObject;
 import pasa.cbentley.byteobjects.src4.ctx.BOCtx;
 import pasa.cbentley.byteobjects.src4.ctx.IConfigBO;
 import pasa.cbentley.core.fx.ctx.FxCtx;
-import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.framework.coredraw.fx.engine.FontCustomizerFx;
 import pasa.cbentley.framework.coredraw.fx.engine.FontFactoryFx;
 import pasa.cbentley.framework.coredraw.fx.engine.ImageFactoryFx;
 import pasa.cbentley.framework.coredraw.fx.engine.ScalerFx;
 import pasa.cbentley.framework.coredraw.j2se.ctx.CoreDrawJ2seCtx;
-import pasa.cbentley.framework.coredraw.j2se.ctx.IConfigCoreDrawJ2se;
 import pasa.cbentley.framework.coredraw.j2se.engine.FontCustomizerJ2SE;
-import pasa.cbentley.framework.coredraw.src4.ctx.IConfigCoreDraw;
+import pasa.cbentley.framework.coredraw.src4.interfaces.IFontCustomizer;
 import pasa.cbentley.framework.coredraw.src4.interfaces.IFontFactory;
 import pasa.cbentley.framework.coredraw.src4.interfaces.IImageFactory;
 import pasa.cbentley.framework.coredraw.src4.interfaces.IScaler;
+import pasa.cbentley.framework.coredraw.src4.interfaces.ITechFeaturesDraw;
 
 public class CoreDrawFxCtx extends CoreDrawJ2seCtx {
 
@@ -58,6 +57,15 @@ public class CoreDrawFxCtx extends CoreDrawJ2seCtx {
 
    public IConfigCoreDrawFx getConfigCoreDrawFx() {
       return configDrawFx;
+   }
+   /**
+    * Returns {@link IFontCustomizer} for {@link ITechFeaturesDraw#SUP_ID_06_CUSTOM_FONTS}
+    */
+   public Object getFeatureObject(int featureID) {
+      if (featureID == ITechFeaturesDraw.SUP_ID_06_CUSTOM_FONTS) {
+         return getFontCustomizerFxLazy();
+      }
+      return null;
    }
 
    public FontCustomizerJ2SE getFontCustomizerJ2SE() {
@@ -108,11 +116,6 @@ public class CoreDrawFxCtx extends CoreDrawJ2seCtx {
       return super.hasFeatureSupport(supportID);
    }
 
-   protected String getDefaultFontNameMonoSub() {
-      String[] availableFontFamilyNames = factoryFont.getAvailableFontFamilyNames();
-
-      return availableFontFamilyNames[0];
-   }
 
    protected String getDefaultFontNameSystemSub() {
       return "Courier New";
