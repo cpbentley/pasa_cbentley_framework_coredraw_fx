@@ -39,7 +39,7 @@ public class CoreDrawFxCtx extends CoreDrawJ2seCtx {
     * @param boc
     */
    public CoreDrawFxCtx(FxCtx fc, BOCtx boc) {
-      this(new ConfigCoreDrawFxDef(boc.getUCtx()), fc, boc);
+      this(new ConfigCoreDrawFxDef(boc.getUC()), fc, boc);
    }
 
    public CoreDrawFxCtx(IConfigCoreDrawFx configDraw, FxCtx fc, BOCtx boc) {
