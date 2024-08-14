@@ -1,4 +1,4 @@
-package pasa.cbentley.framework.coredraw.fx.engine;
+package pasa.cbentley.framework.core.draw.fx.engine;
 
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;

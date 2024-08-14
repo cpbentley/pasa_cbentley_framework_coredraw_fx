@@ -1,4 +1,4 @@
-package pasa.cbentley.framework.coredraw.fx.engine;
+package pasa.cbentley.framework.core.draw.fx.engine;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -13,8 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
-import pasa.cbentley.framework.coredraw.fx.ctx.CoreDrawFxCtx;
-import pasa.cbentley.framework.coredraw.j2se.engine.ImageJ2SE;
+import pasa.cbentley.framework.core.draw.fx.ctx.CoreDrawFxCtx;
+import pasa.cbentley.framework.core.draw.j2se.engine.ImageJ2se;
 
 /**
  * In JavaFX you have to write to a {@link Canvas}.
@@ -25,7 +25,7 @@ import pasa.cbentley.framework.coredraw.j2se.engine.ImageJ2SE;
  * @author Charles-Philip Bentley
  *
  */
-public class ImageFx extends ImageJ2SE {
+public class ImageFx extends ImageJ2se {
 
    private Canvas          canvas;
 

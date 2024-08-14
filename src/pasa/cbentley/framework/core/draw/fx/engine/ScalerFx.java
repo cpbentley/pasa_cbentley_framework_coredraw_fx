@@ -1,70 +1,52 @@
-package pasa.cbentley.framework.coredraw.fx.engine;
+package pasa.cbentley.framework.core.draw.fx.engine;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.WritableImage;
-import pasa.cbentley.framework.coredraw.fx.ctx.CoreDrawFxCtx;
-import pasa.cbentley.framework.coredraw.j2se.engine.ImageFactoryJ2SE;
-import pasa.cbentley.framework.coredraw.src4.interfaces.IImage;
+import pasa.cbentley.core.src4.logging.Dctx;
+import pasa.cbentley.framework.core.draw.fx.ctx.CoreDrawFxCtx;
+import pasa.cbentley.framework.coredraw.src4.engine.ScalerAbstract;
+import pasa.cbentley.framework.coredraw.src4.interfaces.IScaler;
+import pasa.cbentley.layouter.src4.tech.ITechLayout;
 
-public class ImageFactoryFx extends ImageFactoryJ2SE {
+public class ScalerFx extends ScalerAbstract implements IScaler, ITechLayout {
 
-   protected final CoreDrawFxCtx scc;
-
-   public ImageFactoryFx(CoreDrawFxCtx scc) {
-      super(scc);
-      this.scc = scc;
-   }
-
-   public IImage createImage(InputStream is) {
-      return new ImageFx(scc, is);
-   }
-
-   public IImage createImage(int w, int h) {
-      return new ImageFx(scc, w, h);
-   }
+   protected final CoreDrawFxCtx cdsc;
 
    /**
-    * @param w
-    * @param h
-    * @param color
-    * @return
-    */
-   public IImage createImage(int w, int h, int color) {
-      return new ImageFx(scc, w, h, color);
-   }
-
-   public IImage createImage(byte[] data, int start, int len) {
-      return new ImageFx(scc, new ByteArrayInputStream(data, start, len));
-   }
-
-   /**
+    * <li> {@link ITechLayout#SIZE_0_NONE} = 0
+    * <li> {@link ITechLayout#SIZE_1_SMALLEST} = 1
+    * <li> {@link ITechLayout#SIZE_2_SMALL} = 2
+    * <li> {@link ITechLayout#SIZE_3_MEDIUM} = 3
+    * <li> {@link ITechLayout#SIZE_4_BIG} = 5
+    * <li> {@link ITechLayout#SIZE_5_BIGGEST} = 10
     * 
     */
-   public IImage createRGBImage(int[] rgb, int width, int height, boolean processAlpha) {
-      if (rgb == null)
-         throw new NullPointerException();
-      if (width == 0 || height == 0) {
-         return null;
-      }
-      //this is the format for argb
-      PixelFormat pf = PixelFormat.getIntArgbPreInstance();
+   int[]                         scalePadding = new int[] { 0, 2, 4, 5, 6, 8, 10 };
 
-      //BUG for RGB format 
-      //https://stackoverflow.com/questions/37173858/how-to-set-pixelformat-to-rgb-in-javafx
-      //      if (!processAlpha) {
-      //         pf = PixelFormat.getIntArgbPreInstance();
-      //      }
-      WritableImage wi = new WritableImage(width, height);
-      wi.getPixelWriter().setPixels(0, 0, width, height, pf, rgb, 0, width);
-      return new ImageFx(scc, wi);
+   public ScalerFx(CoreDrawFxCtx cdc) {
+      super(cdc);
+      this.cdsc = cdc;
+      scalePadding = new int[6];
+      scalePadding[SIZE_0_NONE] = 0;
+      scalePadding[SIZE_1_SMALLEST] = 2;
+      scalePadding[SIZE_2_SMALL] = 4;
+      scalePadding[SIZE_3_MEDIUM] = 5;
+      scalePadding[SIZE_4_BIG] = 8;
+      scalePadding[SIZE_5_BIGGEST] = 10;
+   }
+
+   @Override
+   public int getScalePixel(int valu, int fun) {
+      if (fun == SCALE_0_PADDING) {
+         return scalePadding[fun];
+      } else if (fun == SCALE_1_EXPO) {
+         return scalePadding[fun];
+      } else {
+         throw new IllegalArgumentException();
+      }
    }
 
    /**
@@ -133,19 +115,23 @@ public class ImageFactoryFx extends ImageFactoryJ2SE {
       return ret;
    }
 
-   public IImage createImage(IImage source) {
-      // TODO Auto-generated method stub
-      return null;
+   //#mdebug
+   public void toString(Dctx dc) {
+      dc.root(this, "ScalerSwing");
+      toStringPrivate(dc);
+      super.toString(dc.sup());
    }
 
-   public IImage createImage(IImage image, int x, int y, int width, int height, int transform) {
-      // TODO Auto-generated method stub
-      return null;
+   private void toStringPrivate(Dctx dc) {
+
    }
 
-   public IImage createImage(String name) throws IOException {
-      // TODO Auto-generated method stub
-      return null;
+   public void toString1Line(Dctx dc) {
+      dc.root1Line(this, "ScalerSwing");
+      toStringPrivate(dc);
+      super.toString1Line(dc.sup1Line());
    }
+
+   //#enddebug
 
 }

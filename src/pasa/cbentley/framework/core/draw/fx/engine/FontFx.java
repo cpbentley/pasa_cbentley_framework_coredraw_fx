@@ -1,4 +1,4 @@
-package pasa.cbentley.framework.coredraw.fx.engine;
+package pasa.cbentley.framework.core.draw.fx.engine;
 
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator.Attribute;
@@ -10,8 +10,8 @@ import javafx.scene.text.FontWeight;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
-import pasa.cbentley.framework.coredraw.fx.ctx.CoreDrawFxCtx;
-import pasa.cbentley.framework.coredraw.j2se.engine.FontJ2SE;
+import pasa.cbentley.framework.core.draw.fx.ctx.CoreDrawFxCtx;
+import pasa.cbentley.framework.core.draw.j2se.engine.FontJ2se;
 
 /**
  * J2SE bridge class for the {@link javax.microedition.lcdui.FontSwing} class of MIDP 2.0 <br>
@@ -25,7 +25,7 @@ import pasa.cbentley.framework.coredraw.j2se.engine.FontJ2SE;
  * @author
  *
  */
-public class FontFx extends FontJ2SE {
+public class FontFx extends FontJ2se {
 
    protected final CoreDrawFxCtx         cdc;
 

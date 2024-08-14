@@ -1,11 +1,11 @@
-package pasa.cbentley.framework.coredraw.fx.engine;
+package pasa.cbentley.framework.core.draw.fx.engine;
 
 import java.io.InputStream;
 
-import pasa.cbentley.framework.coredraw.fx.ctx.CoreDrawFxCtx;
-import pasa.cbentley.framework.coredraw.j2se.engine.FontCustomizerJ2SE;
+import pasa.cbentley.framework.core.draw.fx.ctx.CoreDrawFxCtx;
+import pasa.cbentley.framework.core.draw.j2se.engine.FontCustomizerJ2se;
 
-public class FontCustomizerFx extends FontCustomizerJ2SE {
+public class FontCustomizerFx extends FontCustomizerJ2se {
 
    public FontCustomizerFx(CoreDrawFxCtx cdc, FontFactoryFx factory) {
       super(cdc, factory);

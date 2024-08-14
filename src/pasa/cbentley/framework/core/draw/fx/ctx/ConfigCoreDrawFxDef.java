@@ -1,7 +1,7 @@
-package pasa.cbentley.framework.coredraw.fx.ctx;
+package pasa.cbentley.framework.core.draw.fx.ctx;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
-import pasa.cbentley.framework.coredraw.j2se.ctx.ConfigCoreDrawJ2seDef;
+import pasa.cbentley.framework.core.draw.j2se.ctx.ConfigCoreDrawJ2seDef;
 import pasa.cbentley.framework.coredraw.src4.ctx.ConfigCoreDrawDef;
 import pasa.cbentley.framework.coredraw.src4.ctx.IConfigCoreDraw;
 import pasa.cbentley.framework.coredraw.src4.interfaces.ITechGraphics;
@@ -12,10 +12,6 @@ public class ConfigCoreDrawFxDef extends ConfigCoreDrawJ2seDef implements IConfi
       super(uc);
    }
    
-   public int[] getFontPoints() {
-      // TODO Auto-generated method stub
-      return null;
-   }
 
    public int getAliasMode() {
       return ITechGraphics.MODSET_APP_ALIAS_0_BEST;

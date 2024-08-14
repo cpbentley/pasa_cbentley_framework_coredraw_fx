@@ -1,4 +1,4 @@
-package pasa.cbentley.framework.coredraw.fx.engine;
+package pasa.cbentley.framework.core.draw.fx.engine;
 
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -19,8 +19,8 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.utils.BitUtils;
 import pasa.cbentley.core.src4.utils.ColorUtils;
-import pasa.cbentley.framework.coredraw.fx.ctx.CoreDrawFxCtx;
-import pasa.cbentley.framework.coredraw.j2se.engine.GraphicsJ2SE;
+import pasa.cbentley.framework.core.draw.fx.ctx.CoreDrawFxCtx;
+import pasa.cbentley.framework.core.draw.j2se.engine.GraphicsJ2se;
 import pasa.cbentley.framework.coredraw.src4.interfaces.IGraphics;
 import pasa.cbentley.framework.coredraw.src4.interfaces.IImage;
 import pasa.cbentley.framework.coredraw.src4.interfaces.IMFont;
@@ -30,14 +30,14 @@ import pasa.cbentley.framework.coredraw.src4.interfaces.IMFont;
  * @author DWTFYW
  *
  */
-public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
+public class GraphicsFx extends GraphicsJ2se implements IGraphics {
 
    private int                  color;
 
    /** 
     * MIDP font associated with this graphics context
     */
-   public FontFx                font     = null;
+   public FontFx                fontFx     = null;
 
    /** 
     * JavaFx Graphics context.  
@@ -56,21 +56,21 @@ public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
 
    private int                  fwFlags;
 
-   CoreDrawFxCtx                dd;
+   CoreDrawFxCtx                cdc;
 
    public GraphicsFx(CoreDrawFxCtx dd, GraphicsContext g, ByteObject tech) {
       super(dd);
 
    }
 
-   public GraphicsFx(CoreDrawFxCtx dd, GraphicsContext g) {
-      super(dd);
+   public GraphicsFx(CoreDrawFxCtx cdc, GraphicsContext g) {
+      super(cdc);
       if (g == null) {
          throw new NullPointerException();
       }
       graphics = g;
-      font = (FontFx) dd.getFontFactory().getDefaultFont();
-      this.dd = dd;
+      fontFx = (FontFx) cdc.getFontFactory().getDefaultFont();
+      this.cdc = cdc;
    }
 
    public boolean hasImplementationFlag(int flag) {
@@ -397,25 +397,9 @@ public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
       if (anchor == 0) {
          anchor = TOP | LEFT;
       }
-      switch (anchor & (TOP | BOTTOM | BASELINE | VCENTER)) {
-         case TOP:
-            y += font.getAscent();
-            break;
-         case BOTTOM:
-            y -= font.getDescent();
-            break;
-         case VCENTER:
-            y += (font.getHeight() / 2);
-      }
+      y = super.getFontY_Baseline(fontFx, anchor, y);
+      x = super.getFontX(fontFx, anchor, x, str);
 
-      switch (anchor & (LEFT | RIGHT | HCENTER)) {
-         case RIGHT:
-            x -= font.stringWidth(str);
-            break;
-         case HCENTER:
-            x -= (font.stringWidth(str) >> 1);
-            break;
-      }
 
       graphics.fillText(str, x, y);
    }
@@ -515,7 +499,7 @@ public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
    }
 
    public IMFont getFont() {
-      return font;
+      return fontFx;
    }
 
    public int getGrayScale() {
@@ -572,13 +556,13 @@ public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
    }
 
    public void setFont(IMFont font) {
-      this.font = (FontFx) font;
+      this.fontFx = (FontFx) font;
 
-      if (this.font == null) {
-         this.font = (FontFx) dd.getFontFactory().getDefaultFont();
+      if (this.fontFx == null) {
+         this.fontFx = (FontFx) cdc.getFontFactory().getDefaultFont();
       }
 
-      graphics.setFont(this.font.getFontFx());
+      graphics.setFont(this.fontFx.getFontFx());
    }
 
    public void setGrayScale(int v) {
@@ -611,13 +595,6 @@ public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
       graphics.translate(translate_x, translate_y);
    }
 
-   public IMFont getDefaultFont() {
-      return dd.getFontFactory().getDefaultFont();
-   }
-
-   public IMFont getFont(int face, int style, int size) {
-      return dd.getFontFactory().getFont(face, style, size);
-   }
 
    public boolean hasFeatureEnabled(int featureID) {
       throw new RuntimeException();
@@ -636,7 +613,7 @@ public class GraphicsFx extends GraphicsJ2SE implements IGraphics {
       toStringPrivate(dc);
       super.toString(dc.sup());
       
-      dc.nlLvl(font, "FontFx");
+      dc.nlLvl(fontFx, "FontFx");
    }
 
    private void toStringPrivate(Dctx dc) {
