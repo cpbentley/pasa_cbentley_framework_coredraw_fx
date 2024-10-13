@@ -1,15 +1,10 @@
 package pasa.cbentley.framework.core.draw.fx.engine;
 
-import java.awt.font.TextAttribute;
-import java.text.AttributedCharacterIterator.Attribute;
-
 import com.sun.javafx.tk.Toolkit;
 
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
-import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.framework.core.draw.fx.ctx.CoreDrawFxCtx;
 import pasa.cbentley.framework.core.draw.j2se.engine.FontJ2se;
 
@@ -29,7 +24,6 @@ public class FontFx extends FontJ2se {
 
    protected final CoreDrawFxCtx         cdc;
 
-   private int                           face, style, size;
 
    private com.sun.javafx.tk.FontMetrics fm;
 
@@ -49,10 +43,10 @@ public class FontFx extends FontJ2se {
       FontWeight fw = FontWeight.NORMAL;
       FontPosture posture = FontPosture.REGULAR;
       switch (style) {
-         case STYLE_BOLD:
+         case STYLE_1_BOLD:
             fw = FontWeight.BOLD;
             break;
-         case STYLE_ITALIC:
+         case STYLE_2_ITALIC:
             posture = FontPosture.ITALIC;
             break;
          // Doesn't seem to be any underlined font support in plain old AWT, never mind.
@@ -60,10 +54,6 @@ public class FontFx extends FontJ2se {
 
       this.font = javafx.scene.text.Font.font(fontNameInit, fw, posture, points);
       fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
-   }
-
-   public javafx.scene.text.Font getFontFx() {
-      return font;
    }
 
    public int charsWidth(char[] c, int ofs, int len) {
@@ -78,16 +68,12 @@ public class FontFx extends FontJ2se {
       return (int) fm.getAscent();
    }
 
-   public int getBaselinePosition() {
-      return 0;
-   }
-
    public int getDescent() {
       return (int) fm.getDescent();
    }
 
-   public int getFace() {
-      return face;
+   public javafx.scene.text.Font getFontFx() {
+      return font;
    }
 
    public int getHeight() {
@@ -109,37 +95,13 @@ public class FontFx extends FontJ2se {
       return font.getName();
    }
 
-   public int getSize() {
-      return size;
-   }
-
-   public int getStyle() {
-      return style;
-   }
-
    public int getWidthWeigh() {
       return stringWidth("m");
-   }
-
-   public boolean isBold() {
-      return (style & STYLE_BOLD) != 0;
-   }
-
-   public boolean isItalic() {
-      return (style & STYLE_ITALIC) != 0;
-   }
-
-   public boolean isPLAIN() {
-      return style == 0;
    }
 
    public boolean isSupported(int flag) {
       // TODO Auto-generated method stub
       return false;
-   }
-
-   public boolean isUnderlined() {
-      return (style & STYLE_UNDERLINED) != 0;
    }
 
    /**
@@ -161,13 +123,13 @@ public class FontFx extends FontJ2se {
    public int substringWidth(String s, int offset, int length) {
       return stringWidth(s.substring(offset, offset + length));
    }
-   
+
    //#mdebug
    public void toString(Dctx dc) {
-      dc.root(this, FontFx.class, "@line5");
+      dc.root(this, FontFx.class, 155);
       toStringPrivate(dc);
       super.toString(dc.sup());
-      
+
       dc.nl();
       dc.root(font, "javafx.scene.text.Font");
       dc.appendVarWithSpace("name", font.getName());
@@ -178,17 +140,16 @@ public class FontFx extends FontJ2se {
 
    }
 
-   private void toStringPrivate(Dctx dc) {
-      
-   }
-
    public void toString1Line(Dctx dc) {
       dc.root1Line(this, FontFx.class);
       toStringPrivate(dc);
       super.toString1Line(dc.sup1Line());
    }
 
+   private void toStringPrivate(Dctx dc) {
+
+   }
+
    //#enddebug
-   
 
 }
