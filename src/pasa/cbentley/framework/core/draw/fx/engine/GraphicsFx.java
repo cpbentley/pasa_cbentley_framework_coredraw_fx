@@ -1,6 +1,5 @@
 package pasa.cbentley.framework.core.draw.fx.engine;
 
-import java.awt.RenderingHints;
 import java.awt.Stroke;
 
 import javafx.geometry.Bounds;
@@ -15,7 +14,6 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Affine;
 import pasa.cbentley.byteobjects.src4.core.ByteObject;
-import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.utils.BitUtils;
 import pasa.cbentley.core.src4.utils.ColorUtils;
@@ -32,51 +30,6 @@ import pasa.cbentley.framework.coredraw.src4.interfaces.IMFont;
  */
 public class GraphicsFx extends GraphicsJ2se implements IGraphics {
 
-   private int                  color;
-
-   /** 
-    * MIDP font associated with this graphics context
-    */
-   public FontFx                fontFx     = null;
-
-   /** 
-    * JavaFx Graphics context.  
-    * <br>
-    * This is passed in the constructor, but will be created from the getGraphics call on an AWT Image
-    */
-   private GraphicsContext      graphics;
-
-   private Stroke               gStroke;
-
-   private int                  stroke;
-
-   private int                  translate_x;
-
-   private int                  translate_y;
-
-   private int                  fwFlags;
-
-   CoreDrawFxCtx                cdc;
-
-   public GraphicsFx(CoreDrawFxCtx dd, GraphicsContext g, ByteObject tech) {
-      super(dd);
-
-   }
-
-   public GraphicsFx(CoreDrawFxCtx cdc, GraphicsContext g) {
-      super(cdc);
-      if (g == null) {
-         throw new NullPointerException();
-      }
-      graphics = g;
-      fontFx = (FontFx) cdc.getFontFactory().getDefaultFont();
-      this.cdc = cdc;
-   }
-
-   public boolean hasImplementationFlag(int flag) {
-      return BitUtils.hasFlag(fwFlags, flag);
-   }
-
    public static boolean hasCollision(int rx, int ry, int rw, int rh, int x, int y, int w, int h) {
       //by default collision. invalidates with root coordinate
       if (rx + rw <= x)
@@ -88,6 +41,72 @@ public class GraphicsFx extends GraphicsJ2se implements IGraphics {
       if (ry >= y + h)
          return false;
       return true;
+   }
+
+   CoreDrawFxCtx           cdc;
+
+   private int             color;
+
+   /** 
+    * MIDP font associated with this graphics context
+    */
+   public FontFx           fontFx = null;
+
+   private int             fwFlags;
+
+   /** 
+    * JavaFx Graphics context.  
+    * <br>
+    * This is passed in the constructor, but will be created from the getGraphics call on an AWT Image
+    */
+   private GraphicsContext graphics;
+
+   private Stroke          gStroke;
+
+   private int             stroke;
+
+   private int             translate_x;
+
+   private int             translate_y;
+
+   public GraphicsFx(CoreDrawFxCtx cdc, GraphicsContext g) {
+      super(cdc);
+      if (g == null) {
+         throw new NullPointerException();
+      }
+      graphics = g;
+      fontFx = (FontFx) cdc.getFontFactory().getDefaultFont();
+      this.cdc = cdc;
+   }
+
+   public GraphicsFx(CoreDrawFxCtx dd, GraphicsContext g, ByteObject tech) {
+      super(dd);
+
+   }
+
+   public void clipRect(int x, int y, int width, int height) {
+      Node clip = graphics.getCanvas().getClip();
+      //#debug
+      if (clip != null) {
+         int rx = (int) clip.getBoundsInLocal().getMinX();
+         int ry = (int) clip.getBoundsInLocal().getMinY();
+         int rw = (int) clip.getBoundsInLocal().getWidth();
+         int rh = (int) clip.getBoundsInLocal().getHeight();
+
+         //#debug
+         String msg = "GraphicsFx#clipRect " + rx + "," + ry + " " + rw + "-" + rh;
+         //#debug
+         toDLog().pBridge(msg, this, GraphicsFx.class, "clipRect", LVL_05_FINE, true);
+
+         //compute intersection
+         int[] r = new int[4];
+         clipRectIntersection(rx, ry, rw, rh, x, y, width, height, r);
+         if (r != null) {
+            setClip(r[0], r[1], r[2], r[3]);
+         }
+      } else {
+         setClip(x, y, width, height);
+      }
    }
 
    /**
@@ -150,31 +169,6 @@ public class GraphicsFx extends GraphicsJ2se implements IGraphics {
          return intersect;
       }
       return null;
-   }
-
-   public void clipRect(int x, int y, int width, int height) {
-      Node clip = graphics.getCanvas().getClip();
-      //#debug
-      if (clip != null) {
-         int rx = (int) clip.getBoundsInLocal().getMinX();
-         int ry = (int) clip.getBoundsInLocal().getMinY();
-         int rw = (int) clip.getBoundsInLocal().getWidth();
-         int rh = (int) clip.getBoundsInLocal().getHeight();
-
-         //#debug
-         String msg = "GraphicsFx#clipRect " + rx + "," + ry + " " + rw + "-" + rh;
-         //#debug
-         toDLog().pBridge(msg, this, GraphicsFx.class, "clipRect", LVL_05_FINE, true);
-
-         //compute intersection
-         int[] r = new int[4];
-         clipRectIntersection(rx, ry, rw, rh, x, y, width, height, r);
-         if (r != null) {
-            setClip(r[0], r[1], r[2], r[3]);
-         }
-      } else {
-         setClip(x, y, width, height);
-      }
    }
 
    public void drawArc(int x, int y, int w, int h, int sa, int aa) {
@@ -400,12 +394,17 @@ public class GraphicsFx extends GraphicsJ2se implements IGraphics {
       y = super.getFontY_Baseline(fontFx, anchor, y);
       x = super.getFontX(fontFx, anchor, x, str);
 
-
       graphics.fillText(str, x, y);
    }
 
    public void drawSubstring(String str, int offset, int len, int x, int y, int anchor) {
       drawString(str.substring(offset, offset + len), x, y, anchor);
+   }
+
+   public boolean featureEnable(int featureID, boolean enable) {
+      // TODO Auto-generated method stub
+      throw new RuntimeException();
+      //return false;
    }
 
    public void fillArc(int x, int y, int w, int h, int sa, int aa) {
@@ -527,6 +526,15 @@ public class GraphicsFx extends GraphicsJ2se implements IGraphics {
       return translate_y;
    }
 
+   public boolean hasFeatureEnabled(int featureID) {
+      throw new RuntimeException();
+      //return false;
+   }
+
+   public boolean hasImplementationFlag(int flag) {
+      return BitUtils.hasFlag(fwFlags, flag);
+   }
+
    public void setClip(int x, int y, int width, int height) {
       graphics.beginPath();
       graphics.rect(x, y, width, height);
@@ -588,38 +596,20 @@ public class GraphicsFx extends GraphicsJ2se implements IGraphics {
    /**
     * translate needs to remember the current translation, since AWT doesn't provide getTranslate methods.
     */
-   public void translate(int x, int y) {
+   public void setTranslate(int x, int y) {
       graphics.translate(-translate_x, -translate_y);
       translate_x += x;
       translate_y += y;
       graphics.translate(translate_x, translate_y);
    }
 
-
-   public boolean hasFeatureEnabled(int featureID) {
-      throw new RuntimeException();
-      //return false;
-   }
-
-   public boolean featureEnable(int featureID, boolean enable) {
-      // TODO Auto-generated method stub
-      throw new RuntimeException();
-      //return false;
-   }
-   
    //#mdebug
    public void toString(Dctx dc) {
       dc.root(this, GraphicsFx.class, "@line5");
       toStringPrivate(dc);
       super.toString(dc.sup());
-      
-      dc.nlLvl(fontFx, "FontFx");
-   }
 
-   private void toStringPrivate(Dctx dc) {
-      dc.appendVarWithSpace("color", color);
-      dc.appendVarWithSpace("translate_x", translate_x);
-      dc.appendVarWithSpace("translate_y", translate_y);
+      dc.nlLvl(fontFx, "FontFx");
    }
 
    public void toString1Line(Dctx dc) {
@@ -628,7 +618,12 @@ public class GraphicsFx extends GraphicsJ2se implements IGraphics {
       super.toString1Line(dc.sup1Line());
    }
 
+   private void toStringPrivate(Dctx dc) {
+      dc.appendVarWithSpace("color", color);
+      dc.appendVarWithSpace("translate_x", translate_x);
+      dc.appendVarWithSpace("translate_y", translate_y);
+   }
+
    //#enddebug
-   
 
 }
